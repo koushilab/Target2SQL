@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -24,12 +25,14 @@ func prettyPrint(b []byte) ([]byte, error) {
 }
 
 func main() {
+	var author string
+	fmt.Println("Author Initial Value is", author)
 
 	db, err := sql.Open("mysql", "root:koushi8888@tcp(127.0.0.1:3306)/student")
 	PrintFatalError(err)
 	defer db.Close()
 
-	creTab, err := db.Query("CREATE TABLE IF NOT EXISTS jsons(id INT(11), author VARCHAR(500) DEFAULT NULL,description VARCHAR(500) DEFAULT NULL)")
+	creTab, err := db.Query("CREATE TABLE IF NOT EXISTS jsons( author VARCHAR(500) DEFAULT NULL,description VARCHAR(500) DEFAULT NULL)")
 	PrintFatalError(err)
 
 	defer creTab.Close()
@@ -57,9 +60,11 @@ func main() {
 			switch vv := v.(type) {
 			case string:
 				if k == "author" {
-					insRow, err := db.Query("INSERT INTO jsons(id,author)values(1,?)", vv)
-					PrintFatalError(err)
-					defer insRow.Close()
+					author = vv
+					fmt.Println("Author Assigned Value is", author)
+					//insRow, err := db.Query("INSERT INTO jsons(id,author)values(1,?)", vv)
+					//PrintFatalError(err)
+					//defer insRow.Close()
 
 				}
 				fmt.Println(k, "is string", vv)
@@ -68,12 +73,21 @@ func main() {
 			case []interface{}:
 				fmt.Println(k, "is an array:")
 				if k == "description" {
+					s := make([]string, len(vv))
 					for i, u := range vv {
 						fmt.Println(i+1, u)
-						insRow, err := db.Query("INSERT INTO jsons(id,description)values(1,?)", u)
-						PrintFatalError(err)
-						defer insRow.Close()
+						s[i] = fmt.Sprint(u)
+
 					}
+					fmt.Println(s)
+					fmt.Printf("%T", s)
+					fmt.Printf("%q\n", s)
+					fmt.Println(strings.Join(s, "->>"))
+					stlist := strings.Join(s, "->>")
+					fmt.Println(stlist)
+					insRow, err := db.Query("INSERT INTO jsons(author,description)values(?,?)", author, stlist)
+					PrintFatalError(err)
+					defer insRow.Close()
 
 				}
 			default:
