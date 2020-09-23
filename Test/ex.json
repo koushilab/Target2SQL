@@ -1,0 +1,8 @@
+{
+	"author": "NetApp Ansible Team (@carchi8py) \u003cng-ansibleteam@netapp.com\u003e",
+	"description": [
+		"Create, modify, or destroy vserver security file-directory policy",
+		"Add or remove task from policy.",
+		"Each time a policy/task is created/modified, automatically apply policy to vserver."
+  ]
+}
