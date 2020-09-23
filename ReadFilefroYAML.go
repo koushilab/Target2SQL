@@ -2,10 +2,13 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func PrintFatalError(err error) {
@@ -21,6 +24,15 @@ func prettyPrint(b []byte) ([]byte, error) {
 }
 
 func main() {
+
+	db, err := sql.Open("mysql", "root:koushi8888@tcp(127.0.0.1:3306)/student")
+	PrintFatalError(err)
+	defer db.Close()
+
+	creTab, err := db.Query("CREATE TABLE IF NOT EXISTS jsons(id INT(11), author VARCHAR(500) DEFAULT NULL,description VARCHAR(500) DEFAULT NULL)")
+	PrintFatalError(err)
+
+	defer creTab.Close()
 
 	filePath := "E:\\Go Tasks\\Target2SQL\\Target2SQL\\Test\\"
 
@@ -44,13 +56,25 @@ func main() {
 		for k, v := range m {
 			switch vv := v.(type) {
 			case string:
+				if k == "author" {
+					insRow, err := db.Query("INSERT INTO jsons(id,author)values(1,?)", vv)
+					PrintFatalError(err)
+					defer insRow.Close()
+
+				}
 				fmt.Println(k, "is string", vv)
 			case float64:
 				fmt.Println(k, "is float64", vv)
 			case []interface{}:
 				fmt.Println(k, "is an array:")
-				for i, u := range vv {
-					fmt.Println(i+1, u)
+				if k == "description" {
+					for i, u := range vv {
+						fmt.Println(i+1, u)
+						insRow, err := db.Query("INSERT INTO jsons(id,description)values(1,?)", u)
+						PrintFatalError(err)
+						defer insRow.Close()
+					}
+
 				}
 			default:
 				fmt.Println(k, "is of a type I don't know how to handle")
