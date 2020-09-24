@@ -5,3 +5,7 @@ Convert the Arrays to Strings wherever the values are of
 Now Read Keys from YAMLFile and compare with feild name and if both are equal then 
   add the values from generated file and add it to the field values 
   
+Pending Things 
+Refer StructsJSON3 file and change strings[] to strings join 
+Create Table and insert Rows into SQL
+MAke SQL Rows unique
