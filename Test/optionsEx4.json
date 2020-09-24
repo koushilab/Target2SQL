@@ -1,0 +1,89 @@
+{
+	"author": "NetApp Ansible Team (@carchi8py) \u003cng-ansibleteam@netapp.com\u003e",
+	"description": [
+		"Create/Delete/Rename Igroups and Modify initiators belonging to an igroup"
+	],
+	"extends_documentation_fragment": [
+		"netapp.ontap.netapp.na_ontap"
+	],
+	"module": "na_ontap_igroup",
+	"options": {
+		"bind_portset": {
+			"description": [
+				"Name of a current portset to bind to the newly created igroup."
+			],
+			"type": "str"
+		},
+		"force_remove_initiator": {
+			"description": [
+				"Forcibly remove the initiator even if there are existing LUNs mapped to this initiator group."
+			],
+			"type": "bool"
+		},
+		"from_name": {
+			"description": [
+				"Name of igroup to rename to name."
+			],
+			"type": "str",
+			"version_added": "2.7.0"
+		},
+		"initiator_group_type": {
+			"choices": [
+				"fcp",
+				"iscsi",
+				"mixed"
+			],
+			"description": [
+				"Type of the initiator group.",
+				"Required when C(state=present)."
+			],
+			"type": "str"
+		},
+		"initiators": {
+			"aliases": [
+				"initiator"
+			],
+			"description": [
+				"List of initiators to be mapped to the igroup.",
+				"WWPN, WWPN Alias, or iSCSI name of Initiator to add or remove.",
+				"For a modify operation, this list replaces the exisiting initiators",
+				"This module does not add or remove specific initiator(s) in an igroup"
+			],
+			"elements": "str",
+			"type": "list"
+		},
+		"name": {
+			"description": [
+				"The name of the igroup to manage."
+			],
+			"required": true,
+			"type": "str"
+		},
+		"ostype": {
+			"description": [
+				"OS type of the initiators within the group."
+			],
+			"type": "str"
+		},
+		"state": {
+			"choices": [
+				"present",
+				"absent"
+			],
+			"default": "present",
+			"description": [
+				"Whether the specified Igroup should exist or not."
+			],
+			"type": "str"
+		},
+		"vserver": {
+			"description": [
+				"The name of the vserver to use."
+			],
+			"required": true,
+			"type": "str"
+		}
+	},
+	"short_description": "NetApp ONTAP iSCSI or FC igroup configuration",
+	"version_added": "2.6.0"
+}
