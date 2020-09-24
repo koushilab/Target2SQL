@@ -25,19 +25,26 @@ func prettyPrint(b []byte) ([]byte, error) {
 }
 
 func main() {
+
 	var author string
-	fmt.Println("Author Initial Value is", author)
+	var shortDescription string
+	var versionAdded string
+	var extendsDoc string
+	var module string
+	var description string
 
 	db, err := sql.Open("mysql", "root:koushi8888@tcp(127.0.0.1:3306)/student")
 	PrintFatalError(err)
 	defer db.Close()
 
-	creTab, err := db.Query("CREATE TABLE IF NOT EXISTS jsons( author VARCHAR(500) DEFAULT NULL,description VARCHAR(500) DEFAULT NULL)")
+	creTab, err := db.Query("CREATE TABLE IF NOT EXISTS jsons(module VARCHAR(500), short_description VARCHAR(500), version_added VARCHAR(500), extends_document VARCHAR(1000), author VARCHAR(500) DEFAULT NULL,description VARCHAR(4000) DEFAULT NULL)")
 	PrintFatalError(err)
 
 	defer creTab.Close()
 
-	filePath := "E:\\Go Tasks\\Target2SQL\\Target2SQL\\Test\\"
+	//filePath := "E:\\Go Tasks\\Target2SQL\\Target2SQL\\Test\\"
+
+	filePath := "E:\\Go Tasks\\Final\\Results\\JSONOut\\"
 
 	files, err := ioutil.ReadDir(filePath)
 	PrintFatalError(err)
@@ -61,11 +68,12 @@ func main() {
 			case string:
 				if k == "author" {
 					author = vv
-					fmt.Println("Author Assigned Value is", author)
-					//insRow, err := db.Query("INSERT INTO jsons(id,author)values(1,?)", vv)
-					//PrintFatalError(err)
-					//defer insRow.Close()
-
+				} else if k == "module" {
+					module = vv
+				} else if k == "short_description" {
+					shortDescription = vv
+				} else if k == "version_added" {
+					versionAdded = vv
 				}
 				fmt.Println(k, "is string", vv)
 			case float64:
@@ -77,24 +85,23 @@ func main() {
 					for i, u := range vv {
 						fmt.Println(i+1, u)
 						s[i] = fmt.Sprint(u)
-
 					}
-					fmt.Println(s)
-					fmt.Printf("%T", s)
-					fmt.Printf("%q\n", s)
-					fmt.Println(strings.Join(s, "->>"))
-					stlist := strings.Join(s, "->>")
-					fmt.Println(stlist)
-					insRow, err := db.Query("INSERT INTO jsons(author,description)values(?,?)", author, stlist)
-					PrintFatalError(err)
-					defer insRow.Close()
-
+					description = strings.Join(s, "->>")
+				} else if k == "extends_documentation_fragment" {
+					s := make([]string, len(vv))
+					for i, u := range vv {
+						fmt.Println(i+1, u)
+						s[i] = fmt.Sprint(u)
+					}
+					extendsDoc = strings.Join(s, "->>")
 				}
 			default:
 				fmt.Println(k, "is of a type I don't know how to handle")
 			}
 		}
-
+		insRow, err := db.Query("INSERT INTO jsons(module,short_description,version_added,extends_document,author,description)values(?,?,?,?,?,?)", module, shortDescription, versionAdded, extendsDoc, author, description)
+		PrintFatalError(err)
+		defer insRow.Close()
 	}
 
 }

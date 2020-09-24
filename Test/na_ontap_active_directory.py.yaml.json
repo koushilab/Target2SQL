@@ -1,0 +1,71 @@
+{
+	"author": "NetApp Ansible Team (@carchi8py) \u003cng-ansibleteam@netapp.com\u003e",
+	"description": [
+		"Configure Active Directory"
+	],
+	"extends_documentation_fragment": [
+		"netapp.ontap.netapp.na_ontap"
+	],
+	"module": "na_ontap_active_directory",
+	"options": {
+		"account_name": {
+			"description": [
+				"Active Directory account NetBIOS name."
+			],
+			"required": true,
+			"type": "str"
+		},
+		"admin_password": {
+			"description": [
+				"Administrator password required for Active Directory account creation."
+			],
+			"required": true,
+			"type": "str"
+		},
+		"admin_username": {
+			"description": [
+				"Administrator username required for Active Directory account creation."
+			],
+			"required": true,
+			"type": "str"
+		},
+		"domain": {
+			"description": [
+				"Fully qualified domain name."
+			],
+			"type": "str"
+		},
+		"force_account_overwrite": {
+			"description": [
+				"If true and a machine account with the same name as specified in 'account-name' exists in Active Directory, it will be overwritten and reused."
+			],
+			"type": "bool"
+		},
+		"organizational_unit": {
+			"description": [
+				"Organizational unit under which the Active Directory account will be created."
+			],
+			"type": "str"
+		},
+		"state": {
+			"choices": [
+				"present",
+				"absent"
+			],
+			"default": "present",
+			"description": [
+				"Whether the Active Directory should exist or not"
+			],
+			"type": "str"
+		},
+		"vserver": {
+			"description": [
+				"The name of the vserver to use."
+			],
+			"required": true,
+			"type": "str"
+		}
+	},
+	"short_description": "NetApp ONTAP configure active directory",
+	"version_added": "20.9.0"
+}
