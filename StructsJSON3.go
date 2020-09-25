@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"reflect"
+	"strings"
 )
 
 type Initial struct {
@@ -13,6 +14,7 @@ type Initial struct {
 	Options          interface{} `json:"options,omitempty"`
 	ShortDescription string      `json:"short_description,omitempty"`
 	Description      []string    `json:"description,omitempty"`
+	ExtendsDoc       []string    `json:"extends_documentation_fragment,omitempty"`
 	VersionAdded     string      `json:"version_added,omitempty"`
 	Author           string      `json:"author,omitempty"`
 	Deprecated       string      `json:"deprecated,omitempty"`
@@ -56,14 +58,28 @@ func main() {
 	if err := json.Unmarshal([]byte(b), &options); err != nil {
 		log.Fatal(err)
 	}
+	// Convert string[] to string joins
+	InitialDesc := strings.Join(initial.Description, "->>")
+	InitialExtendsDoc := strings.Join(initial.ExtendsDoc, "->>")
 
 	keys := reflect.ValueOf(options).MapKeys()
 	fmt.Println(keys)
-	fmt.Println(len(keys))
-	fmt.Println(options[keys[6].String()].Description)
-	fmt.Println(initial.Module)
-	fmt.Println(initial.Author)
-	fmt.Println(initial.Deprecated)
+
+	for i := 0; i < len(keys); i++ {
+		fmt.Println(options[keys[i].String()])
+		OptAlias := strings.Join(options[keys[i].String()].Aliases, "->>")
+		OptChoice := strings.Join(options[keys[i].String()].Choices, "->>")
+		OptDesc := strings.Join(options[keys[i].String()].Description, "->>")
+		fmt.Println(OptAlias, OptChoice, OptDesc)
+
+	}
+	//fmt.Println(len(keys))
+	//fmt.Println(options[keys[6].String()].Description)
+	//fmt.Println(initial.Module)
+	//fmt.Println(initial.Author)
+
+	fmt.Println(InitialDesc)
+	fmt.Println(InitialExtendsDoc)
 	//fmt.Printf("%+v\n", options)
 
 }
