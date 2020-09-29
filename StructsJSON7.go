@@ -67,7 +67,7 @@ func getValueswithin(t interface{}) string {
 func main() {
 
 	count := 0
-	db, err := sql.Open("mysql", "root:koushi8888@tcp(127.0.0.1:3306)/student")
+	db, err := sql.Open("mysql", "root:xxxxxx@tcp(127.0.0.1:3306)/student")
 	PrintFatalError(err)
 	defer db.Close()
 
